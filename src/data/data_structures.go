@@ -1,4 +1,4 @@
-package data
+package gontractor
 
 type Week struct {
 	NormalHours      float64

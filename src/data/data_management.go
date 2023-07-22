@@ -1,4 +1,4 @@
-package data
+package gontractor
 
 var weeks = make(map[string]Week)
 var contractorGoal Goal

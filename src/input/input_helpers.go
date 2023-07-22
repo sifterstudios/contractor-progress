@@ -1,4 +1,4 @@
-package input
+package gontractor
 
 import (
 	"fmt"
