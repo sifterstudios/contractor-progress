@@ -10,7 +10,6 @@ import (
 )
 
 func ReadDataFromFile() (map[string]Week, Goal, error) {
-	weeks := make(map[string]Week)
 	goal := Goal{}
 
 	jsonFile, err := os.Open(util.DataFilePath)

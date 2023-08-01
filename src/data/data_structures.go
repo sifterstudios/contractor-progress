@@ -19,3 +19,16 @@ type FileData struct {
 	Weeks map[string]Week
 	Goal  Goal
 }
+
+type Stats struct {
+	TotalWeeks            int
+	TotalHours            float64
+	TotalOvertimeHours    float64
+	TotalVacationDays     int
+	TotalNationalHolidays int
+	TotalChildcareDays    int
+	TotalSickDays         int
+	PctCompleted          float64
+	DaysLeft              int
+	HoursLeft             float64
+}

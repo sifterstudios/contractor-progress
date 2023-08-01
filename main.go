@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	crunching "github.com/sifterstudios/gontractor/src/crunching"
 	data "github.com/sifterstudios/gontractor/src/data"
 	util "github.com/sifterstudios/gontractor/src/util"
 )
@@ -10,12 +11,26 @@ import (
 var (
 	weeks map[string]data.Week
 	goal  data.Goal
+	stats data.Stats
 )
 
 func main() {
 	fmt.Println("Welcome to Gontractor!")
 	fmt.Println("Checking for json file...")
 
+	initalize()
+	getStats(&stats)
+	showStats(&stats)
+
+	fmt.Println("What would you like to do?")
+	fmt.Println("1. Add a week")
+	fmt.Println("2. View a week")
+	fmt.Println("3. View all weeks")
+	fmt.Println("4. Change week")
+	fmt.Println("5. Set goal")
+}
+
+func initalize() {
 	fileExists := data.FileExists(util.DataFilePath)
 
 	if !fileExists {
@@ -23,5 +38,44 @@ func main() {
 		data.WriteDataToFile(weeks, goal)
 	} else {
 		fmt.Println("Found json file.")
+	}
+
+	weeks, goal, err := data.ReadDataFromFile()
+	if err != nil {
+		fmt.Println("Error reading data file.")
+	}
+
+	fmt.Printf("Found %d weeks of data\n", len(weeks))
+
+	if goal.TotalContractHours == 0 {
+		setGoal(&goal)
+		data.WriteDataToFile(weeks, goal)
+		fmt.Printf("Goal set at %f hours.", goal.TotalContractHours)
+	}
+}
+
+func getStats(stats *data.Stats) *data.Stats {
+	crunching.GetTotalHours(weeks)
+	stats.PctCompleted = crunching.GetPercentComplete(weeks, goal)
+	stats.DaysLeft, stats.HoursLeft = crunching.GetTimeLeft(weeks, goal)
+	return stats
+}
+
+func showStats(stats *data.Stats) {
+	fmt.Printf("Total weeks: %d\n", stats.TotalWeeks)
+	fmt.Printf("Total hours: %f\n", stats.TotalHours)
+	fmt.Printf("Sickdays: %d\n", stats.TotalSickDays)
+	fmt.Printf("Vacation-days: %d\n", stats.TotalVacationDays)
+	fmt.Printf("Child care: %d\n\n", stats.TotalChildcareDays)
+	fmt.Printf("Percent complete: %f\n", stats.PctCompleted)
+	fmt.Printf("This means you have %d days and %f.1 hours left to work", stats.DaysLeft, stats.HoursLeft)
+}
+
+func setGoal(goal *data.Goal) {
+	fmt.Println("No goal has been set. How many hours are there in your contract?")
+
+	_, err := fmt.Scanln(&goal.TotalContractHours)
+	if err != nil {
+		fmt.Println("Error reading goal hours.")
 	}
 }
