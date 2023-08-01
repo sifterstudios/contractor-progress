@@ -3,7 +3,7 @@ package data
 import (
 	"encoding/json"
 	"errors"
-	"io/ioutil"
+	"io"
 	"os"
 
 	util "github.com/sifterstudios/gontractor/src/util"
@@ -11,14 +11,19 @@ import (
 
 func readDataFromFile() (map[string]Week, Goal, error) {
 	weeks := make(map[string]Week)
-	goal := Goal()
+	goal := Goal{}
 
 	if !fileExists(util.DataFilePath) {
-		return weeks, goal, errors.New("Data file not found!")
+		return weeks, goal, errors.New("data file not found")
 		// TODO: create file if it doesn't exist
 	}
 
-	jsonData, err := ioutil.ReadFile(util.DataFilePath)
+	jsonFile, err := os.Open(util.DataFilePath)
+	if err != nil {
+		return nil, Goal{}, err
+	}
+
+	jsonData, err := io.ReadAll(jsonFile)
 	if err != nil {
 		return nil, Goal{}, err
 	}
@@ -27,7 +32,7 @@ func readDataFromFile() (map[string]Week, Goal, error) {
 	err = json.Unmarshal(jsonData, &fileData)
 
 	if err != nil {
-		return nil, goal, errors.New("Could not parse data file!")
+		return nil, goal, errors.New("could not parse data file")
 	}
 
 	weeks = fileData.Weeks

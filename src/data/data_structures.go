@@ -16,6 +16,6 @@ type Goal struct {
 }
 
 type FileData struct {
-	Weeks []Week
+	Weeks map[string]Week
 	Goal  Goal
 }
