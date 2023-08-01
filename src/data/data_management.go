@@ -1,7 +1,9 @@
-package gontractor
+package data
 
-var weeks = make(map[string]Week)
-var contractorGoal Goal
+var (
+	weeks          = make(map[string]Week)
+	contractorGoal Goal
+)
 
 func addWeek(weekNumber string, week Week) {
 	weeks[weekNumber] = week

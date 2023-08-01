@@ -1,6 +1,8 @@
-package gontractor
+package data
 
 type Week struct {
+	WeekNumber       string
+	Year             int
 	NormalHours      float64
 	OvertimeHours    float64
 	VacationDays     int
@@ -11,4 +13,9 @@ type Week struct {
 
 type Goal struct {
 	TotalContractHours float64
+}
+
+type FileData struct {
+	Weeks []Week
+	Goal  Goal
 }
