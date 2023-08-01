@@ -1,5 +1,0 @@
-package gontractor
-
-func main() {
-
-}
