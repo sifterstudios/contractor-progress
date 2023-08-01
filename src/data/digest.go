@@ -8,7 +8,7 @@ import (
 	util "github.com/sifterstudios/gontractor/src/util"
 )
 
-func writeDataToFile(weeks map[string]Week, goal Goal) error {
+func WriteDataToFile(weeks map[string]Week, goal Goal) error {
 	jsonData, err := json.Marshal(FileData{weeks, goal})
 	if err != nil {
 		return errors.New("could not parse data file")

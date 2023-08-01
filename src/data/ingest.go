@@ -9,14 +9,9 @@ import (
 	util "github.com/sifterstudios/gontractor/src/util"
 )
 
-func readDataFromFile() (map[string]Week, Goal, error) {
+func ReadDataFromFile() (map[string]Week, Goal, error) {
 	weeks := make(map[string]Week)
 	goal := Goal{}
-
-	if !fileExists(util.DataFilePath) {
-		return weeks, goal, errors.New("data file not found")
-		// TODO: create file if it doesn't exist
-	}
 
 	jsonFile, err := os.Open(util.DataFilePath)
 	if err != nil {
@@ -41,7 +36,7 @@ func readDataFromFile() (map[string]Week, Goal, error) {
 	return weeks, goal, nil
 }
 
-func fileExists(filePath string) bool {
+func FileExists(filePath string) bool {
 	_, err := os.Stat(filePath)
 	return !os.IsNotExist(err)
 }
