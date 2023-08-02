@@ -1,27 +1,25 @@
-package gontractor
+package input
 
 import (
 	"fmt"
-	"os"
 )
 
-func promptInt(message string) int {
+func promptInt(message string) (int, error) {
 	var input int
 	fmt.Print(message)
 	_, err := fmt.Scan(&input)
 	if err != nil {
 		fmt.Println("Invalid input. please try again.")
-		os.Exit(1)
 	}
-	return input
+	return input, err
 }
-func promptFloat(message string) float64 {
+
+func promptFloat(message string) (float64, error) {
 	var input float64
 	fmt.Print(message)
 	_, err := fmt.Scan(&input)
 	if err != nil {
 		fmt.Println("Invalid input. please try again.")
-		os.Exit(1)
 	}
-	return input
+	return input, err
 }
