@@ -1,7 +1,7 @@
 package data
 
 type Week struct {
-	WeekNumber       string
+	WeekNumber       int
 	Year             int
 	NormalHours      float64
 	OvertimeHours    float64

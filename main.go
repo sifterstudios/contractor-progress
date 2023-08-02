@@ -27,9 +27,10 @@ func main() {
 	showStats(&stats)
 
 	for shouldContinue := true; shouldContinue; {
-		handleChoice(&shouldContinue)
-		clearScreen()
 		printChoices()
+		clearScreen()
+		handleChoice(&shouldContinue)
+		data.WriteDataToFile(weeks, goal)
 	}
 	fmt.Println("Welcome back!")
 	fmt.Scanln()
@@ -69,11 +70,11 @@ func handleChoice(shouldContinue *bool) {
 	case 2:
 		input.ViewWeek(&weeks)
 	case 3:
-		input.VieawAllWeeks(&weeks)
+		input.ViewAllWeeks(&weeks)
 	case 4:
 		input.ChangeWeek(&weeks)
 	case 5:
-		input.SetGoal(&goal)
+		input.SetGoal(&goal.TotalContractHours)
 	case 6:
 		*shouldContinue = false
 	default:
