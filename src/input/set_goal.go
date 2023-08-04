@@ -1,4 +1,10 @@
 package input
 
-func SetGoal(goal *float64) {
+import (
+	"fmt"
+)
+
+func SetGoal(goal *float64, newGoal float64) {
+	*goal = newGoal
+	fmt.Println("Goal set to", newGoal)
 }

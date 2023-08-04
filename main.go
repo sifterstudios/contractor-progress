@@ -28,7 +28,6 @@ func main() {
 
 	for shouldContinue := true; shouldContinue; {
 		printChoices()
-		// clearScreen()
 		handleChoice(&shouldContinue)
 		data.WriteDataToFile(weeks, goal)
 	}
@@ -38,7 +37,7 @@ func main() {
 }
 
 func printChoices() {
-	// clearScreen()
+	clearScreen()
 
 	fmt.Println("What would you like to do?")
 	fmt.Println("1. Add a week")
@@ -47,6 +46,7 @@ func printChoices() {
 	fmt.Println("4. Change week")
 	fmt.Println("5. Set goal")
 	fmt.Println("6. Exit")
+	fmt.Println("")
 }
 
 func clearScreen() {
@@ -75,7 +75,7 @@ func handleChoice(shouldContinue *bool) {
 	case 4:
 		input.ChangeWeek(&weeks)
 	case 5:
-		input.SetGoal(&goal.TotalContractHours)
+		// input.SetGoal(&goal.TotalContractHours)
 	case 6:
 		*shouldContinue = false
 	default:
@@ -110,19 +110,19 @@ func initalize(weeks *map[string]data.Week, goal *data.Goal) {
 
 func getStats(stats *data.Stats) *data.Stats {
 	crunching.GetTotalHours(weeks)
-	stats.PctCompleted = crunching.GetPercentComplete(weeks, goal)
+	stats.PctCompleted = crunching.GetPercentComplete(weeks, goal) * 100
 	stats.DaysLeft, stats.HoursLeft = crunching.GetTimeLeft(weeks, goal)
 	return stats
 }
 
 func showStats(stats *data.Stats) {
 	fmt.Printf("Total weeks: %d\n", stats.TotalWeeks)
-	fmt.Printf("Total hours: %f\n", stats.TotalHours)
+	fmt.Printf("Total hours: %.1f\n", stats.TotalHours)
 	fmt.Printf("Sickdays: %d\n", stats.TotalSickDays)
 	fmt.Printf("Vacation-days: %d\n", stats.TotalVacationDays)
 	fmt.Printf("Child care: %d\n\n", stats.TotalChildcareDays)
-	fmt.Printf("Percent complete: %f\n", stats.PctCompleted)
-	fmt.Printf("This means you have %d days and %f.1 hours left to work", stats.DaysLeft, stats.HoursLeft)
+	fmt.Printf("Percent complete: %.2f\n", stats.PctCompleted)
+	fmt.Printf("This means you have %d days and %.1f hours left to work", stats.DaysLeft, stats.HoursLeft)
 }
 
 func setGoal(goal *data.Goal) {
