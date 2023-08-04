@@ -6,6 +6,8 @@ import (
 	"os/exec"
 	"runtime"
 
+	"github.com/fatih/color"
+
 	crunching "github.com/sifterstudios/gontractor/src/crunching"
 	data "github.com/sifterstudios/gontractor/src/data"
 	input "github.com/sifterstudios/gontractor/src/input"
@@ -19,12 +21,18 @@ var (
 )
 
 func main() {
+	green := color.New(color.FgGreen, color.Bold)
+	red := color.New(color.FgRed, color.Bold)
+
+	clearScreen()
 	fmt.Println("Welcome to Gontractor!")
 	fmt.Println("Checking for json file...")
 
 	initalize(&weeks, &goal)
-	getStats(&stats)
-	showStats(&stats)
+	stats = getStats(&weeks, &goal)
+	showStats(stats, green, red)
+	fmt.Println("Press enter to continue...")
+	fmt.Scanln()
 
 	for shouldContinue := true; shouldContinue; {
 		printChoices()
@@ -45,7 +53,8 @@ func printChoices() {
 	fmt.Println("3. View all weeks")
 	fmt.Println("4. Change week")
 	fmt.Println("5. Set goal")
-	fmt.Println("6. Exit")
+	fmt.Println("6. Reset data")
+	fmt.Println("7. Exit")
 	fmt.Println("")
 }
 
@@ -77,7 +86,14 @@ func handleChoice(shouldContinue *bool) {
 	case 5:
 		// input.SetGoal(&goal.TotalContractHours)
 	case 6:
+		weeks = make(map[string]data.Week)
+		goal = data.Goal{}
+		data.WriteDataToFile(weeks, goal)
+		main()
+	case 7:
 		*shouldContinue = false
+	case 8:
+	// TODO: Backup data
 	default:
 		fmt.Println("Invalid choice")
 	}
@@ -108,25 +124,40 @@ func initalize(weeks *map[string]data.Week, goal *data.Goal) {
 	}
 }
 
-func getStats(stats *data.Stats) *data.Stats {
-	crunching.GetTotalHours(weeks)
-	stats.PctCompleted = crunching.GetPercentComplete(weeks, goal) * 100
-	stats.DaysLeft, stats.HoursLeft = crunching.GetTimeLeft(weeks, goal)
+func getStats(weeks *map[string]data.Week, goal *data.Goal) data.Stats {
+	stats := data.Stats{}
+
+	crunching.GetTotalHours(&*weeks)
+	stats.TotalWeeks = len(*weeks)
+	stats.TotalHours = crunching.GetTotalHours(weeks)
+	stats.TotalSickDays = crunching.GetTotalSickDays(weeks)
+	stats.TotalVacationDays = crunching.GetTotalVacationDays(weeks)
+	stats.TotalChildcareDays = crunching.GetTotalChildcareDays(weeks)
+	stats.TotalNationalHolidays = crunching.GetTotalNationalHolidays(weeks)
+	stats.PctCompleted = crunching.GetPercentComplete(&*weeks, &*goal) * 100
+	stats.DaysLeft, stats.HoursLeft = crunching.GetTimeLeft(&*weeks, &*goal)
+	fmt.Printf("Stats: %+v\n", stats)
 	return stats
 }
 
-func showStats(stats *data.Stats) {
+func showStats(stats data.Stats, green *color.Color, red *color.Color) {
 	fmt.Printf("Total weeks: %d\n", stats.TotalWeeks)
 	fmt.Printf("Total hours: %.1f\n", stats.TotalHours)
 	fmt.Printf("Sickdays: %d\n", stats.TotalSickDays)
 	fmt.Printf("Vacation-days: %d\n", stats.TotalVacationDays)
 	fmt.Printf("Child care: %d\n\n", stats.TotalChildcareDays)
-	fmt.Printf("Percent complete: %.2f\n", stats.PctCompleted)
-	fmt.Printf("This means you have %d days and %.1f hours left to work", stats.DaysLeft, stats.HoursLeft)
+	fmt.Printf("National holidays: %d\n\n", stats.TotalNationalHolidays)
+
+	green.Printf("Percent complete: %.2f\n", stats.PctCompleted)
+	red.Printf("This means you have %d days and %.1f hours left to work\n", stats.DaysLeft, stats.HoursLeft)
 }
 
 func setGoal(goal *data.Goal) {
-	fmt.Println("No goal has been set. How many hours are there in your contract?")
+	if goal.TotalContractHours == 0 {
+		fmt.Println("No goal has been set. How many hours are there in your contract?")
+	} else {
+		fmt.Printf("Your current goal is %p hours. What would you like to change it to?\n", &goal.TotalContractHours)
+	}
 
 	_, err := fmt.Scanln(&goal.TotalContractHours)
 	if err != nil {

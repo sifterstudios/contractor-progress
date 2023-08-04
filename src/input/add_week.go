@@ -2,14 +2,13 @@ package input
 
 import (
 	"fmt"
-	"time"
 
 	data "github.com/sifterstudios/gontractor/src/data"
 )
 
 var (
-	input string
-	err   error
+	inputString string
+	err         error
 )
 
 func AddWeek(weeks *map[string]data.Week) {
@@ -20,18 +19,18 @@ func AddWeek(weeks *map[string]data.Week) {
 	week := data.Week{}
 
 	fmt.Println("Adding a week...")
-	currentYear, currentWeek := getCurrentWeek()
+	currentYear, currentWeek := data.GetCurrentYearAndWeek()
 	fmt.Printf("Using year %d, and week #%d. Press 'y' to confirm, 'n' to specify. ", currentYear, currentWeek)
-	fmt.Scan(&input)
+	fmt.Scan(&inputString)
 
-	if input == "n" {
+	if inputString == "n" {
 		getCustomYearAndWeek(&week)
 	} else {
 		week.Year = currentYear
 		week.WeekNumber = currentWeek
 	}
 	fmt.Println("Are there any special things needing to be accounted for this week? (y/n) ")
-	fmt.Scan(&input)
+	fmt.Scan(&inputString)
 
 	week.NormalHours, err = PromptFloat("How many regular hours did you work this week? ")
 	if err != nil {
@@ -41,13 +40,13 @@ func AddWeek(weeks *map[string]data.Week) {
 	if err != nil {
 		AddWeek(weeks)
 	}
-	if input == "y" {
+	if inputString == "y" {
 		getSpecialThings(&week, &weeks)
 	}
 
 	summarizeWeek(&week)
 	fmt.Println("Press any key to confirm, 'n' to re-enter. ")
-	if input == "n" {
+	if inputString == "n" {
 		AddWeek(weeks)
 	}
 
@@ -88,8 +87,4 @@ func getCustomYearAndWeek(week *data.Week) {
 	fmt.Scan(&week.Year)
 	fmt.Print("Enter week: ")
 	fmt.Scan(&week.WeekNumber)
-}
-
-func getCurrentWeek() (int, int) {
-	return time.Now().ISOWeek()
 }
