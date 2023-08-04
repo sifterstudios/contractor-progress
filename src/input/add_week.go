@@ -13,53 +13,73 @@ var (
 )
 
 func AddWeek(weeks *map[string]data.Week) {
+	if weeks == nil {
+		*weeks = make(map[string]data.Week)
+	}
+
 	week := data.Week{}
 
 	fmt.Println("Adding a week...")
 	currentYear, currentWeek := getCurrentWeek()
-	fmt.Printf("Using year %d, and week #%d. Press return to confirm, any other key to specify.", currentYear, currentWeek)
+	fmt.Printf("Using year %d, and week #%d. Press 'y' to confirm, 'n' to specify. ", currentYear, currentWeek)
 	fmt.Scan(&input)
-	if input != " " {
+
+	if input == "n" {
 		getCustomYearAndWeek(&week)
 	} else {
 		week.Year = currentYear
 		week.WeekNumber = currentWeek
 	}
-	fmt.Println("Are there any special things needing to be accounted for this week? (y/n)")
+	fmt.Println("Are there any special things needing to be accounted for this week? (y/n) ")
 	fmt.Scan(&input)
 
-	week.NormalHours, err = PromptFloat("How many regular hours did you work this week?")
+	week.NormalHours, err = PromptFloat("How many regular hours did you work this week? ")
 	if err != nil {
 		AddWeek(weeks)
 	}
-	week.OvertimeHours, err = PromptFloat("How many overtime hours did you work this week?")
+	week.OvertimeHours, err = PromptFloat("How many overtime hours did you work this week? ")
 	if err != nil {
 		AddWeek(weeks)
 	}
 	if input == "y" {
-		getSpecialThings(week, weeks)
+		getSpecialThings(&week, &weeks)
 	}
 
-	// Add week to weeks
+	summarizeWeek(&week)
+	fmt.Println("Press any key to confirm, 'n' to re-enter. ")
+	if input == "n" {
+		AddWeek(weeks)
+	}
+
 	(*weeks)[fmt.Sprintf("%d-%d", week.Year, week.WeekNumber)] = week
 }
 
-func getSpecialThings(week data.Week, weeks *map[string]data.Week) {
-	week.VacationDays, err = PromptInt("How many vacation days did you take this week?")
+func summarizeWeek(week *data.Week) {
+	fmt.Printf("Week %d-%d\n", week.Year, week.WeekNumber)
+	fmt.Printf("Regular hours: %f\n", week.NormalHours)
+	fmt.Printf("Overtime hours: %f\n", week.OvertimeHours)
+	fmt.Printf("Vacation days: %d\n", week.VacationDays)
+	fmt.Printf("National holidays: %d\n", week.NationalHolidays)
+	fmt.Printf("Childcare days: %d\n", week.ChildcareDays)
+	fmt.Printf("Sick days: %d\n", week.SickDays)
+}
+
+func getSpecialThings(week *data.Week, weeks **map[string]data.Week) {
+	week.VacationDays, err = PromptInt("How many vacation days did you take this week? ")
 	if err != nil {
-		AddWeek(weeks)
+		AddWeek(*weeks)
 	}
-	week.NationalHolidays, err = PromptInt("How many national holidays did you take this week?")
+	week.NationalHolidays, err = PromptInt("How many national holidays did you take this week? ")
 	if err != nil {
-		AddWeek(weeks)
+		AddWeek(*weeks)
 	}
-	week.ChildcareDays, err = PromptInt("How many childcare days did you take this week?")
+	week.ChildcareDays, err = PromptInt("How many childcare days did you take this week? ")
 	if err != nil {
-		AddWeek(weeks)
+		AddWeek(*weeks)
 	}
-	week.SickDays, err = PromptInt("How many sick days did you take this week?")
+	week.SickDays, err = PromptInt("How many sick days did you take this week? ")
 	if err != nil {
-		AddWeek(weeks)
+		AddWeek(*weeks)
 	}
 }
 

@@ -22,22 +22,23 @@ func main() {
 	fmt.Println("Welcome to Gontractor!")
 	fmt.Println("Checking for json file...")
 
-	initalize()
+	initalize(&weeks, &goal)
 	getStats(&stats)
 	showStats(&stats)
 
 	for shouldContinue := true; shouldContinue; {
 		printChoices()
-		clearScreen()
+		// clearScreen()
 		handleChoice(&shouldContinue)
 		data.WriteDataToFile(weeks, goal)
 	}
 	fmt.Println("Welcome back!")
+	data.WriteDataToFile(weeks, goal)
 	fmt.Scanln()
 }
 
 func printChoices() {
-	clearScreen()
+	// clearScreen()
 
 	fmt.Println("What would you like to do?")
 	fmt.Println("1. Add a week")
@@ -82,27 +83,28 @@ func handleChoice(shouldContinue *bool) {
 	}
 }
 
-func initalize() {
+func initalize(weeks *map[string]data.Week, goal *data.Goal) {
 	fileExists := data.FileExists(util.DataFilePath)
 
 	if !fileExists {
 		fmt.Println("No json file found. Creating one...")
-		data.WriteDataToFile(weeks, goal)
+		data.WriteDataToFile(*weeks, *goal)
 	} else {
 		fmt.Println("Found json file.")
 	}
 
-	weeks, goal, err := data.ReadDataFromFile()
+	err := error(nil)
+	*weeks, *goal, err = data.ReadDataFromFile()
 	if err != nil {
 		fmt.Println("Error reading data file.")
 	}
 
-	fmt.Printf("Found %d weeks of data\n", len(weeks))
+	fmt.Printf("Found %d weeks of data\n", len(*weeks))
 
 	if goal.TotalContractHours == 0 {
-		setGoal(&goal)
-		data.WriteDataToFile(weeks, goal)
-		fmt.Printf("Goal set at %f hours.", goal.TotalContractHours)
+		setGoal(&*goal)
+		data.WriteDataToFile(*weeks, *goal)
+		fmt.Printf("Goal set at %p hours.", &goal.TotalContractHours)
 	}
 }
 

@@ -16,6 +16,7 @@ func ReadDataFromFile() (map[string]Week, Goal, error) {
 	if err != nil {
 		return nil, Goal{}, err
 	}
+	defer jsonFile.Close()
 
 	jsonData, err := io.ReadAll(jsonFile)
 	if err != nil {

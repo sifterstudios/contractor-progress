@@ -13,7 +13,7 @@ func ChangeWeek(weeks *map[string]data.Week) {
 	fmt.Println("Are there any special things needing to be accounted for this week? (y/n)")
 	fmt.Scan(&input)
 	if input == "y" {
-		getSpecialThings(week, weeks)
+		getSpecialThings(&week, &weeks)
 	}
 	// Add week to weeks
 	(*weeks)[fmt.Sprintf("%d-%d", week.Year, week.WeekNumber)] = week
