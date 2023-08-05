@@ -46,6 +46,7 @@ func AddWeek(weeks *map[string]data.Week) {
 
 	summarizeWeek(&week)
 	fmt.Println("Press any key to confirm, 'n' to re-enter. ")
+	fmt.Scan(&inputString)
 	if inputString == "n" {
 		AddWeek(weeks)
 	}

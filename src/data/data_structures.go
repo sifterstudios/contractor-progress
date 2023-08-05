@@ -1,5 +1,9 @@
 package data
 
+import (
+	"time"
+)
+
 type Week struct {
 	WeekNumber       int
 	Year             int
@@ -21,14 +25,15 @@ type FileData struct {
 }
 
 type Stats struct {
-	TotalWeeks            int
-	TotalHours            float64
-	TotalOvertimeHours    float64
-	TotalVacationDays     int
-	TotalNationalHolidays int
-	TotalChildcareDays    int
-	TotalSickDays         int
-	PctCompleted          float64
-	DaysLeft              int
-	HoursLeft             float64
+	TotalWeeks                int
+	TotalHours                float64
+	TotalOvertimeHours        float64
+	TotalVacationDays         int
+	TotalNationalHolidays     int
+	TotalChildcareDays        int
+	TotalSickDays             int
+	PctCompleted              float64
+	DaysLeft                  int
+	HoursLeft                 float64
+	EstimatedDateOfCompletion time.Time
 }

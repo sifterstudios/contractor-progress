@@ -99,7 +99,7 @@ func handleChoice(shouldContinue *bool) {
 	case 7:
 		*shouldContinue = false
 	case 8:
-	// TODO: Backup data
+	// TODO: Backup data - OR maybe just automatically do this when reading the file..
 	default:
 		fmt.Println("Invalid choice")
 	}
@@ -142,8 +142,7 @@ func getStats(weeks *map[string]data.Week, goal *data.Goal) data.Stats {
 	stats.TotalNationalHolidays = crunching.GetTotalNationalHolidays(weeks)
 	stats.PctCompleted = crunching.GetPercentComplete(&*weeks, &*goal) * 100
 	stats.DaysLeft, stats.HoursLeft = crunching.GetTimeLeft(&*weeks, &*goal)
-	fmt.Printf("Stats: %+v\n", stats)
-	// TODO: Would be awesome to show the actual date of expected completion
+	stats.EstimatedDateOfCompletion = crunching.GetEstimatedCompletionDate(&*weeks, &*goal)
 
 	return stats
 }
@@ -153,11 +152,12 @@ func showStats(stats data.Stats, green *color.Color, red *color.Color) {
 	fmt.Printf("Total hours: %.1f\n", stats.TotalHours)
 	fmt.Printf("Sickdays: %d\n", stats.TotalSickDays)
 	fmt.Printf("Vacation-days: %d\n", stats.TotalVacationDays)
-	fmt.Printf("Child care: %d\n\n", stats.TotalChildcareDays)
+	fmt.Printf("Child care: %d\n", stats.TotalChildcareDays)
 	fmt.Printf("National holidays: %d\n\n", stats.TotalNationalHolidays)
 
 	green.Printf("Percent complete: %.2f\n", stats.PctCompleted)
-	red.Printf("This means you have %d days and %.1f hours left to work\n", stats.DaysLeft, stats.HoursLeft)
+	red.Printf("This means you have %d days and %.1f hours left to work\n\n", stats.DaysLeft, stats.HoursLeft)
+	red.Printf("Estimated date of completion: %s\n", stats.EstimatedDateOfCompletion.Format("2006-01-02"))
 }
 
 func setGoal(goal *data.Goal) {

@@ -2,6 +2,8 @@ module github.com/sifterstudios/gontractor
 
 go 1.20
 
+require golang.org/x/text v0.12.0
+
 require (
 	github.com/cilium/ebpf v0.7.0 // indirect
 	github.com/cosiner/argv v0.1.0 // indirect

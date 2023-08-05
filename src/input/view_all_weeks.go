@@ -26,4 +26,6 @@ func ViewAllWeeks(weeks *map[string]data.Week) {
 	}
 
 	tbl.Print()
+	fmt.Println("Press enter to continue...")
+	fmt.Scanln()
 }

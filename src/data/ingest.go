@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"os"
+	"time"
 
 	util "github.com/sifterstudios/gontractor/src/util"
 )
@@ -22,6 +23,7 @@ func ReadDataFromFile() (map[string]Week, Goal, error) {
 	if err != nil {
 		return nil, Goal{}, err
 	}
+	createBackup(jsonData)
 
 	var fileData FileData
 	err = json.Unmarshal(jsonData, &fileData)
@@ -39,4 +41,13 @@ func ReadDataFromFile() (map[string]Week, Goal, error) {
 func FileExists(filePath string) bool {
 	_, err := os.Stat(filePath)
 	return !os.IsNotExist(err)
+}
+
+func createBackup(data []byte) error {
+	t := time.Now()
+	timeString := t.Format("2006-01-02_15:04:05")
+	fileName := "backup_" + timeString + ".json"
+
+	os.WriteFile(fileName, data, 0644)
+	return nil
 }
