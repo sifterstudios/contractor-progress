@@ -15,18 +15,23 @@ import (
 )
 
 var (
-	weeks map[string]data.Week
-	goal  data.Goal
-	stats data.Stats
+	weeks   map[string]data.Week
+	goal    data.Goal
+	stats   data.Stats
+	verbose bool
 )
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "-v" {
+		verbose = true
+	}
+
 	green := color.New(color.FgGreen, color.Bold)
 	red := color.New(color.FgRed, color.Bold)
 
 	clearScreen()
 	fmt.Println("Welcome to Gontractor!")
-	fmt.Println("Checking for json file...")
+	util.Log("Checking for json file...", verbose)
 
 	initalize(&weeks, &goal)
 	stats = getStats(&weeks, &goal)
@@ -69,6 +74,7 @@ func clearScreen() {
 
 	cmd.Stdout = os.Stdout
 	cmd.Run()
+	util.Log("Cleared screen", verbose)
 }
 
 func handleChoice(shouldContinue *bool) {
@@ -84,7 +90,7 @@ func handleChoice(shouldContinue *bool) {
 	case 4:
 		input.ChangeWeek(&weeks)
 	case 5:
-		// input.SetGoal(&goal.TotalContractHours)
+		input.SetGoal(&goal.TotalContractHours)
 	case 6:
 		weeks = make(map[string]data.Week)
 		goal = data.Goal{}
@@ -103,10 +109,10 @@ func initalize(weeks *map[string]data.Week, goal *data.Goal) {
 	fileExists := data.FileExists(util.DataFilePath)
 
 	if !fileExists {
-		fmt.Println("No json file found. Creating one...")
+		util.Log("No json file found. Creating one...", verbose)
 		data.WriteDataToFile(*weeks, *goal)
 	} else {
-		fmt.Println("Found json file.")
+		util.Log("Found json file.", verbose)
 	}
 
 	err := error(nil)
@@ -137,6 +143,8 @@ func getStats(weeks *map[string]data.Week, goal *data.Goal) data.Stats {
 	stats.PctCompleted = crunching.GetPercentComplete(&*weeks, &*goal) * 100
 	stats.DaysLeft, stats.HoursLeft = crunching.GetTimeLeft(&*weeks, &*goal)
 	fmt.Printf("Stats: %+v\n", stats)
+	// TODO: Would be awesome to show the actual date of expected completion
+
 	return stats
 }
 

@@ -22,8 +22,8 @@ func GetPercentComplete(weeks *map[string]data.Week, goal *data.Goal) float64 {
 func GetTimeLeft(weeks *map[string]data.Week, goal *data.Goal) (int, float64) {
 	totalHours := GetTotalHours(weeks)
 	hoursLeft := goal.TotalContractHours - totalHours
-	daysLeft := math.Floor(hoursLeft / 37.5)
-	hoursLeft = hoursLeft - (daysLeft * 37.5)
+	daysLeft := math.Floor(hoursLeft / 7.5)
+	hoursLeft = hoursLeft - (daysLeft * 7.5)
 	return int(daysLeft), hoursLeft
 }
 
